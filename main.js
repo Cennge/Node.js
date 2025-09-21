@@ -4,7 +4,7 @@
    Необхідно вивести дані про ціну товару у грн, запустивши
    дві задачі асинхронно. 
 */
-import { delay, time } from "./helper.js";
+import { delay, time } from "./timehelper.js";
 import { EventEmitter } from 'node:events';
 
 const processor = new EventEmitter();
@@ -31,9 +31,12 @@ processor.on('rate',  onRateEvent );
 processor.on('price', onPriceEvent);
 processor.on('data',  onDataEvent );
 
-await Promise.all([
-    delay(Math.random() * 2000).then(() => processor.emit('rate', 42)),
-    delay(Math.random() * 2000).then(() => processor.emit('price', 100)),
+await Promise.race([
+    Promise.all([
+        delay(Math.random() * 20000).then(() => processor.emit('rate', 42)),
+        delay(Math.random() * 20000).then(() => processor.emit('price', 100)),
+    ]),
+    delay(5000).then(() => console.log(time(), "Timeout: no data after 5s")),
 ]);
 
 processor.off('rate',  onRateEvent );
