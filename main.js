@@ -1,96 +1,57 @@
-const _url = "https://login:passw0rd@music.portal.fun:80/rock/ballads?search=scorpions&from=1990#descending";
+const mysql = require('mysql2/promise');
 
-// p@ss:w%rd --> p%40s%3Asw%25rd  (@->%40, :->%3A, %->%25)
-const invalidUrl = "123";
-let result = {
-    "scheme": "https",
-    "auth": {
-        "user-id": "login",
-        "password": "passw0rd"
-    },
-    "host": {
-        "tld": "fun",
-        "domain": "portal",
-        "subdomain": "music"
-    },
-    "port": 80,
-    "path": [
-        "rock",
-        "ballads"
-    ],
-    "query": {
-        "search": "scorpions",
-        "from": "1990"
-    },
-    "fragment": "descending"
+const dbPool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'test_db',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+
+const generateRandomData = () => {
+    const randomInt = Math.floor(Math.random() * 1000);
+    const randomFloat = Math.random() * 100;
+    const randomString = Math.random().toString(36).substring(2, 12);
+    return [randomInt, randomFloat, randomString];
 };
 
-function parseUrl(url) {
-    let result = {};
-    let parts = url.split("://");
-    if (parts.length !== 2) throw new Error("Invalid URL: Missing or multiple scheme separators");
-    result.scheme = parts[0];
+async function main() {
+    let connection;
+    try {
+        connection = await dbPool.getConnection();
 
-    parts = parts[1].split("@");
-    if (parts.length === 2) {
-        let authParts = parts[0].split(":");
-        if (authParts.length !== 2) throw new Error("Invalid URL: Invalid authentication format");
-        result.auth = {
-            "user-id": authParts[0],
-            "password": authParts[1]
-        };
-    } else if (parts.length > 2) {
-        throw new Error("Invalid URL: Multiple authentication separators");
-    }
+        const createTableSql = `
+            CREATE TABLE IF NOT EXISTS random_items (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                int_val INT,
+                float_val FLOAT,
+                str_val VARCHAR(255)
+            ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4
+        `;
 
-    let afterAuth = parts.length === 2 ? parts[1] : parts[0];
+        await connection.query(createTableSql);
 
-    let hostPortAndRest = afterAuth.split("/");
-    let hostPort = hostPortAndRest[0];
-    let [host, port] = hostPort.split(":");
-    result.port = port ? Number(port) : undefined;
-
-    let hostParts = host.split(".");
-    if (hostParts.length === 3) {
-        result.host = {
-            subdomain: hostParts[0],
-            domain: hostParts[1],
-            tld: hostParts[2]
-        };
-    } else if (hostParts.length === 2) {
-        result.host = {
-            domain: hostParts[0],
-            tld: hostParts[1]
-        };
-    } else {
-        result.host = { tld: hostParts[0] };
-    }
-
-    let rest = hostPortAndRest.slice(1).join("/");
-    let pathAndQuery = rest.split("?");
-    let pathStr = pathAndQuery[0];
-    let queryAndFrag = pathAndQuery[1];
-    result.path = pathStr ? pathStr.split("/").filter(Boolean) : [];
-
-    if (queryAndFrag) {
-        let fragSplit = queryAndFrag.split("#");
-        let queryStr = fragSplit[0];
-        let fragment = fragSplit[1];
-
-        if (queryStr) {
-            result.query = {};
-            queryStr.split("&").forEach(pair => {
-                let [key, value] = pair.split("=");
-                result.query[key] = value;
-            });
+        const insertSql = 'INSERT INTO random_items (int_val, float_val, str_val) VALUES (?, ?, ?)';
+        
+        for (let i = 0; i < 5; i++) {
+            const randomData = generateRandomData();
+            await connection.query(insertSql, randomData);
         }
 
-        if (fragment) {
-            result.fragment = fragment;
-        }
-    }
+        const selectSql = 'SELECT * FROM random_items';
+        const [rows] = await connection.query(selectSql);
+        console.table(rows);
 
-    console.log(result);
+    } catch (error) {
+        console.error('Error:', error);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+        await dbPool.end();
+    }
 }
 
-parseUrl(_url);
+main();
