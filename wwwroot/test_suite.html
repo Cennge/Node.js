@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=body, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>API TEST</h1>
+
+    <button onclick="testGet()">Get</button>
+    <button onclick="testPost()">Post</button>
+    <button onclick="testPut()">Put</button>
+    <button onclick="testPatch()">Patch</button>
+    <p id="out"></p>
+
+    <script>
+        function testPost(){
+            fetch("/api/client", {
+                method: "POST"
+            }).then(r=>r.json()).then(j => out.innerText = JSON.stringify(j));
+        }
+
+        function testGet() {
+            fetch("/api/client", {
+                
+                method: "GET",
+
+                headers:{
+                    "Connection":"close",
+                    "Accept" : "application/json"
+                }
+
+            }).then(r => r.text())
+                .then(j => {
+                    out.innerText = j;
+                });
+        }
+
+        function testPut(){
+            fetch("/api/client", {
+                method: "PUT"
+            }).then(r=>r.json()).then(j => out.innerText = JSON.stringify(j));
+        }
+
+        function testPatch(){
+            fetch("/api/client", {
+                method: "PATCH"
+            }).then(r=>r.json()).then(j => out.innerText = JSON.stringify(j));
+        }
+    </script>
+
+</body>
+
+</html>

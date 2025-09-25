@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS bebebe</title>
+    <link rel="stylesheet" href="/css/site.css">
+    <link rel="icon" href="/img/logo.jpg">
+
+    <style>
+      table {
+        border-collapse: collapse;
+        box-shadow: 0 4px 10px rgb(168, 20, 185);
+      }
+      td {
+        border: 1px solid rgb(110, 0, 183);
+        padding: 8px;
+      }
+      li ul {
+        display: none;
+      }
+      li.open > ul {
+        display: block;
+      }
+
+      .image-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 10px;
+      }
+
+      .image-item {
+        text-align: center;
+      }
+
+      .hwImj {
+
+        height: 200px;
+        object-fit: cover;
+        border: 4px solid rgb(0, 0, 0);
+        border-radius: 8px;
+      }
+
+      
+    </style>
+</head>
+<body>
+  {{groupsHtml}}
+    <table>
+        <tbody>
+            <tr><td>method</td>     <td>{{method}}</td></tr>
+            <tr><td>protocol</td>   <td>{{httpVersion}}</td></tr>
+            <tr><td>path</td>       <td>{{url}}</td></tr>
+            <tr><td>route</td>      <td>{{path}}</td></tr>
+            <tr><td>controller</td> <td>{{controller}}</td></tr>
+            <tr><td>action</td>     <td>{{action}}</td></tr>
+            <tr><td>slug</td>       <td>{{slug}}</td></tr>
+            <tr><td>query</td>      <td>{{queryString}}</td></tr>
+
+        </tbody>
+    </table>
+
+    <img src="img\JavaScript-logo.png" alt="lolgoJS" style ="width: 200px; height: 200px">
+
+    <div>
+    <h2>HW task 8</h2>
+    <h3>* Картинки</h3>
+    <div class="image-grid">
+      <div class="image-item">
+        <img src="img/img1.png" alt="png картинка" class="hwImj">
+        <div class="caption">img1.png</div>
+      </div>
+      <div class="image-item">
+        <img src="img/img2.jpg" alt="jpg картинка" class="hwImj">
+        <div class="caption">img2.jpg</div>
+      </div>
+      <div class="image-item">
+        <img src="img/img3.gif" alt="gif картинка" class="hwImj">
+        <div class="caption">img3.gif</div>
+      </div>
+      <div class="image-item">
+        <img src="img/img4.bmp" alt="bmp картинка" class="hwImj">
+        <div class="caption">img4.bmp</div>
+      </div>
+    </div>
+
+  <h3>* Аудио</h3>
+  <audio controls>
+    <source src="music/SOAD.mp3" type="audio/mpeg">
+  </audio>
+
+  <h3>* Видео</h3>
+  <video controls width="300">
+    <source src="video/goats.mp4" type="video/mp4">
+  </video>
+</div>
+
+    <script src="/js/site.js"></script>
+
+</body>
+</html>
+
