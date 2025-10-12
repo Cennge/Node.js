@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f9f9f9;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    h2 {
+      margin-top: 40px;
+      color: #444;
+    }
+
+    nav {
+      margin-bottom: 20px;
+    }
+
+    nav a {
+      margin-right: 10px;
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      background: #007bff;
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      margin: 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 400px;
+      background: white;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #f2f2f2;
+    }
+
+    section {
+      display: none;
+      /* приховані за замовчуванням */
+    }
+
+    section.active {
+      display: block;
+      /* показуємо активний */
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Випробування API</h1>
+  <nav>
+    <a href="#client">ClientController</a>
+    <a href="#feedback">FeedbackController</a>
+  </nav>
+
+  <!-- ClientController -->
+  <section id="client">
+    <h2>ClientController</h2>
+    <button onclick="testGet('/api/client')">GET</button>
+    <button onclick="testPost('/api/client')">POST</button>
+    <button onclick="testPut('/api/client')">PUT</button>
+    <button onclick="testPatch('/api/client')">PATCH</button>
+    <button onclick="testDelete('/api/client')">DELETE</button>
+    <div>
+      <input name="user-name" type="text" /><br>
+      <input name="user-email" type="email" /><br>
+      <input name="user-phone" type="tel" /><br>
+      <button onclick="testPost('/api/client')">POST</button>
+
+    </div>
+    <div id="outClient"></div>
+
+  </section>
+
+  <!-- FeedbackController -->
+  <section id="feedback">
+    <h2>FeedbackController</h2>
+    <button onclick="testGet('/api/feedback')">GET</button>
+    <button onclick="testPost('/api/feedback')">POST</button>
+    <button onclick="testPut('/api/feedback')">PUT</button>
+    <button onclick="testPatch('/api/feedback')">PATCH</button>
+    <button onclick="testDelete('/api/feedback')">DELETE</button>
+    <div id="outFeedback"></div>
+  </section>
+
+  <script>
+    function renderTable(data, targetId) {
+      let html = "<table>";
+      for (let key in data) {
+        html += `<tr><th>${key}</th><td>${data[key]}</td></tr>`;
+      }
+      html += "</table>";
+      document.getElementById(targetId).innerHTML = html;
+    }
+    function isJsonContentType(header) {
+      if (typeof header !== "string") return false;
+      const [type] = header.split(";");
+      return type.trim().toLowerCase() === "application/json";
+    }
+
+    function testGet(url) {
+      fetch(url, { method: "GET" })
+        .then(r => r.json())
+        .then(j => renderTable(j, getTarget(url)));
+    }
+    function testPost(url) {
+      const userName = document.querySelector("[name='user-name']").value;
+      const userEmail = document.querySelector("[name='user-email']").value;
+      const userPhone = document.querySelector("[name='user-phone']").value;
+      const data = { userName, userEmail, userPhone };
+      window.fetch(url, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+
+        body: JSON.stringify(data)
+      })
+        .then(r => {
+          if (r.status != 200) {
+            outClient.innerText = `Сервер відповів помилкою ${r.status}`;
+          } else {
+            let ct = r.headers.get("Content-Type");
+            if (isJsonContentType(ct)) {
+              r.json().then(j => outClient.innerText = JSON.stringify(j));
+            } else {
+              outClient.innerText = `Відповідь Сервера не є JSON '${ct}'`;
+            }
+
+          }
+        });
+    }
+    function testPut(url) {
+      fetch(url, { method: "PUT" })
+        .then(r => r.json())
+        .then(j => renderTable(j, getTarget(url)));
+    }
+    function testPatch(url) {
+      fetch(url, { method: "PATCH" })
+        .then(r => r.json())
+        .then(j => renderTable(j, getTarget(url)));
+    }
+    function testDelete(url) {
+      fetch(url, { method: "DELETE" })
+        .then(r => r.json())
+        .then(j => renderTable(j, getTarget(url)));
+    }
+    function getTarget(url) {
+      return url.includes("feedback") ? "outFeedback" : "outClient";
+    }
+
+    // --- логіка перемикання секцій ---
+    function showSectionFromHash() {
+      const hash = window.location.hash || "#client";
+      document.querySelectorAll("section").forEach(sec => {
+        sec.classList.remove("active");
+      });
+      const active = document.querySelector(hash);
+      if (active) active.classList.add("active");
+    }
+
+    window.addEventListener("hashchange", showSectionFromHash);
+    window.addEventListener("load", showSectionFromHash);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+
+
+.tree ul {
+    display: none; 
+    margin-left: 16px; }
+.tree > ul { 
+    display: block; }                 /* root visible */
+.tree li { 
+    list-style: none; 
+    margin: 4px 0; }
+.tree .toggle { 
+      font-weight: bold;
+    cursor: pointer; 
+    user-select: none; }
+.tree li.expanded > ul { 
+    display: block; }
+
+

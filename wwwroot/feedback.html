@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="testGetFeedback()">GET Feedback</button>
+<button onclick="testPostFeedback()">POST Feedback</button>
+<button onclick="testPutFeedback()">PUT Feedback</button>
+<button onclick="testPatchFeedback()">PATCH Feedback</button>
+<button onclick="testDeleteFeedback()">DELETE Feedback</button>
+
+<script>
+function testGetFeedback() {
+    fetch("/api/feedback", { method: "GET" })
+        .then(r => r.json())
+        .then(j => renderTable(j));
+}
+
+function testPostFeedback() {
+    fetch("/api/feedback", { method: "POST" })
+        .then(r => r.json())
+        .then(j => renderTable(j));
+}
+
+function testPutFeedback() {
+    fetch("/api/feedback", { method: "PUT" })
+        .then(r => r.json())
+        .then(j => renderTable(j));
+}
+
+function testPatchFeedback() {
+    fetch("/api/feedback", { method: "PATCH" })
+        .then(r => r.json())
+        .then(j => renderTable(j));
+}
+
+function testDeleteFeedback() {
+    fetch("/api/feedback", { method: "DELETE" })
+        .then(r => r.json())
+        .then(j => renderTable(j));
+}
+</script>
+
+</body>
+</html>

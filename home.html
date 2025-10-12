@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Server</title>
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="icon" href="/img/logo.jpg" >
+</head>
+<body>
+  <div class="tree">
+  {{groupHtml}}
+</div>
+  <h2>Request data</h2>
+  <table border="1" cellpadding="5">
+    <tr><td>method</td><td>{{method}}</td></tr>
+    <tr><td>httpVersion</td><td>{{httpVersion}}</td></tr>
+    <tr><td>url</td><td>{{url}}</td></tr>
+    <tr><td>controller</td><td>{{controller}}</td></tr>
+    <tr><td>action</td><td>{{action}}</td></tr>
+    <tr><td>slug</td><td>{{slug}}</td></tr>
+    <tr><td>query</td><td><pre>{{query}}</pre></td></tr>
+  </table>
+  <img src = "/img/JavaScript-logo.png">
+  <script src ="/js/site.js"></script>
+
+
+  <audio controls>
+    <source src="/audio/sound.mp3" type="audio/mpeg">
+  </audio>
+
+  <video controls width="320">
+    <source src="/video/puppy.mp4" type="video/mp4">
+    Ваш браузер не підтримує відео.
+  </video>
+</body>
+</html>
