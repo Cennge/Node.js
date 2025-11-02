@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+const TOKEN_LIFETIME = 10000; 
 
 export default class UserDao {
     constructor(dbPool) {
@@ -78,7 +79,8 @@ async getDbIdentity() {
 async createTokenForUserAccess(userAccess) {
     const id = await this.getDbIdentity();
     const timestamp = new Date().getTime()/1000|0;
-    const exp = timestamp + 1e6;
+    const exp = timestamp + TOKEN_LIFETIME;
+
 
     const sql = `
         INSERT INTO tokens (id, access_id, issued_at, expired_at)
